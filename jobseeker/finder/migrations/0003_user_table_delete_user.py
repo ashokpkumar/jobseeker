@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
                 ("modified_by", models.IntegerField()),
                 ("modified_time", models.DateTimeField()),
                 ("hidden", models.BooleanField()),
+                ("password_hash", models.CharField())
             ],
         ),
         migrations.DeleteModel(
