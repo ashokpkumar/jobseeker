@@ -4,9 +4,9 @@ from functools import wraps
 from datetime import datetime
 from django.http import HttpResponse
 from finder.models import User_table
-from jobseeker.finder.views import get_lookup_key
-from jobseeker.utils.jwt import jwt_decode
-from jobseeker.utils.rbm import rbm_map
+from utils.lookup import get_lookup_key
+from utils.jwt import jwt_decode
+from utils.rbm import rbm_map
 
 
 def loginrequired(func):

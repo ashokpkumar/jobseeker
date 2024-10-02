@@ -2,7 +2,7 @@
 
 
 
-from jobseeker.finder.models import LookupTable
+from finder.models import LookupTable
 
 
 def get_lookup_value(master_key, key):

@@ -7,10 +7,10 @@ from django.http import HttpResponse, HttpResponseNotFound
 from rest_framework.decorators import api_view
 
 #modules
-from jobseeker.utils.jwt import check_hash_password, hash_password, jwt_encode
-from jobseeker.utils.lookup import get_lookup_value
-from jobseeker.utils.rbm import CreateUserForm
-from jobseeker.utils.validators import check_valid_user, loginrequired, validate_body
+from utils.jwt import check_hash_password, hash_password, jwt_encode
+from utils.lookup import get_lookup_value
+from utils.rbm import CreateUserForm
+from utils.validators import adminrequired, check_valid_user, loginrequired, validate_body
 from .models import LookupTable, User_table
 
 
