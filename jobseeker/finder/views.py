@@ -15,7 +15,7 @@ from utils.validators import adminrequired, check_valid_user, loginrequired, val
 from .models import LookupTable, User_table
 
 
-logger = logging.getLogger("finder")
+logger = logging.getLogger(__name__)
 
 @api_view(['POST'])  
 @validate_body
