@@ -1,6 +1,7 @@
 #Standard Library import
 from datetime import datetime, timedelta
 import uuid
+import logging
 
 #3P import
 from django.http import HttpResponse, HttpResponseNotFound
@@ -14,6 +15,7 @@ from utils.validators import adminrequired, check_valid_user, loginrequired, val
 from .models import LookupTable, User_table
 
 
+logger = logging.getLogger("finder")
 
 @api_view(['POST'])  
 @validate_body
@@ -21,13 +23,14 @@ def create_user(request):    # this creates a new user with only limited data wh
     email = request.data.get("email")
     phone = request.data.get("phone")
     password = request.data.get("password")
-    
+
     user_obj = User_table() # creation of object form the User_table to access attribute(column) values from that table in database
     user_obj.user_id = uuid.uuid4()  # creates a autometic unique user id
     user_obj.email = email
     user_obj.phone = phone
     user_obj.password_hash = hash_password(password)  # converts regular password into hash with sha256 algorithm
     user_obj.save()
+
     return HttpResponse("New user created")
 
 
@@ -61,7 +64,8 @@ def lookup(request):   # this function enters data in the lookup table with mast
     user_obj.master_key = request.data.get("master_key")
     user_obj.key = request.data.get("key")
     user_obj.value = request.data.get("value")
-    user_obj.save()        
+    user_obj.save()    
+    logger.info("Lookup Created Successfully")    
     return HttpResponse("Entry done in lookup table")
 
 
