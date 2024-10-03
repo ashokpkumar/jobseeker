@@ -150,14 +150,18 @@ LOGGING = {
             'formatter': 'verbose',
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
-        'jobseeker': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
+   'loggers': {
+    'finder.views': {  # Add this logger specifically for your views
+        'handlers': ['console'],
+        'level': 'INFO',
     },
+    'django': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'jobseeker': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+},
 }
