@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 
 #modules
 from utils.jwt import check_hash_password, hash_password, jwt_encode
-from utils.lookup import get_lookup_value
+from utils.lookup import get_lookup_value, get_lookup_key
 from utils.rbm import CreateUserForm
 from utils.validators import adminrequired, check_valid_user, loginrequired, validate_body
 from .models import LookupTable, User_table
@@ -36,6 +36,7 @@ def create_user(request):    # this creates a new user with only limited data wh
 
 @api_view(['POST'])
 @loginrequired
+@validate_body
 @check_valid_user
 def fill_newuser(request, userid):  # this function fills the user details with are not given while signup
     user_obj = User_table.objects.filter(user_id = userid).first() # gets the user object details based on user id
@@ -48,8 +49,8 @@ def fill_newuser(request, userid):  # this function fills the user details with 
         user_obj.nationality = request.data.get("nationality")
         user_obj.country_code = request.data.get("country_code")
         user_obj.user_type = get_lookup_value("user_type", request.data.get("user_type"))
-        user_obj.created_by = request.data.get("created_by")
-        user_obj.modified_by = request.data.get("modified_by")
+        user_obj.created_by = request.user_id
+        user_obj.modified_by = request.user_id
         user_obj.modified_time = datetime.now()
         user_obj.hidden = True
         user_obj.save()
@@ -58,6 +59,7 @@ def fill_newuser(request, userid):  # this function fills the user details with 
     
 @api_view(['POST'])
 @loginrequired
+@validate_body
 def lookup(request):   # this function enters data in the lookup table with master key, key, value as attributes
     user_obj = LookupTable() # lookup table in the database
     user_obj.id = uuid.uuid4()
@@ -70,7 +72,11 @@ def lookup(request):   # this function enters data in the lookup table with mast
 
 
 @api_view(['POST'])
+@validate_body
 def login(request):
+    """
+    returns jwt code after successful login
+    """
     username = request.data.get("username")
     password = request.data.get("password")
     try:
@@ -90,7 +96,7 @@ def login(request):
                     "i_at" : str(datetime.now()),
                     "exp_at": str(datetime.now() + timedelta(minutes=15))
                 }
-                return HttpResponse(jwt_encode(payload))
+                return HttpResponse(jwt_encode(payload)) 
     except:
         user_obj = User_table.objects.filter(email=username, password_hash=hash(password)).first()
         if user_obj is None:
