@@ -2,6 +2,8 @@
 from datetime import datetime, timedelta
 import uuid
 import logging
+import requests
+import json
 
 #3P import
 from django.http import HttpResponse, HttpResponseNotFound
@@ -15,7 +17,21 @@ from utils.validators import adminrequired, check_valid_user, loginrequired, val
 from .models import LookupTable, User_table
 
 
+
+
 logger = logging.getLogger(__name__)
+
+@api_view(['GET'])
+def converter(request, from_cur, to_cur):
+    response = requests.get(f"https://open.er-api.com/v6/latest/{from_cur}")
+    if response.ok == True:
+        response_txt = response.text
+        response_json = json.loads(response_txt) # converts sting to dict
+        rates = response_json.get("rates")
+        to_curency_value = rates.get(to_cur)
+        return HttpResponse(to_curency_value)
+    else:
+        return HttpResponse("Error while calling yfinance api.")
 
 @api_view(['POST'])  
 @validate_body
@@ -113,6 +129,34 @@ def login(request):
             }
             return HttpResponse(jwt_encode(payload))
 
+@api_view(['GET'])
+def fetch_users(request):
+    user_list = []
+    country_code = request.GET.get("country_code")
+    user_type = request.GET.get("user_type")
+    # user_obj = User_table.objects.filter(country_code=country_code, user_type=user_type, hidden=False).all()
+    user_obj = User_table.objects
+    if country_code is not None:
+        user_obj = user_obj.filter(country_code=country_code)
+    if user_type is not None:
+        user_obj = user_obj.filter(user_type = get_lookup_value("user_type", user_type))
+    user_obj = user_obj.filter(hidden=False).all()
+
+    for user in user_obj:
+        user_full_name = user.first_name +" "+ user.last_name
+        gender = user.gender
+        nationality = user.nationality
+        email = user.email
+        phone = user.phone
+        user_info = {
+            "user_full_name" : user_full_name,
+            "gender" : gender,
+            "nationality" : nationality,
+            "email" : email,
+            "phone" : phone 
+        }
+        user_list.append(user_info)
+    return HttpResponse(user_list)
              
 @api_view(['PATCH'])
 @loginrequired
