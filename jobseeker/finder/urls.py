@@ -9,8 +9,8 @@ urlpatterns = [
     path("login/fill-newuser/<userid>", views.fill_newuser, name="fill_newuser"),
     path("login/approve-user/<userid>", views.approve_user, name="approve_user"),
     path("lookup/", views.lookup, name="lookup"),
-    # path("lookup/", views.lookup, name="lookup"),
-    # path("lookup/", views.lookup, name="lookup")
+    path("create_mongo_user/",views.create_mongo_user, name="create_user")
+
 
 
 ]

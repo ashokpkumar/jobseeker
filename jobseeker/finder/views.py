@@ -6,6 +6,7 @@ import logging
 #3P import
 from django.http import HttpResponse, HttpResponseNotFound
 from rest_framework.decorators import api_view
+from pymongo import MongoClient
 
 #modules
 from utils.jwt import check_hash_password, hash_password, jwt_encode
@@ -14,6 +15,10 @@ from utils.rbm import CreateUserForm
 from utils.validators import adminrequired, check_valid_user, loginrequired, validate_body
 from .models import LookupTable, User_table
 
+
+
+client = MongoClient("<CONNECTION_STRING>")
+db = client.sample_mflix
 
 logger = logging.getLogger(__name__)
 
@@ -122,3 +127,10 @@ def approve_user(request, userid):
     user_obj.hidden = False
     user_obj.save()
     return HttpResponse("User approved")
+
+@api_view(['POST'])
+def create_mongo_user(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+    result = db.users.insert_one({"name": username,"password":password})
+    return HttpResponse("Mongo DB user created")
