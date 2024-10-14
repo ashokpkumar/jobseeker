@@ -1,5 +1,7 @@
 from django.db import models
 import uuid
+from mongoengine import Document
+from mongoengine.fields import BooleanField,DynamicField,EmailField,EmbeddedDocumentField,IntField,StringField
 
 
 # class Question(models.Model):
@@ -37,3 +39,12 @@ class LookupTable(models.Model):
     master_key = models.CharField()
     key = models.CharField()
     value = models.IntegerField()
+
+class MongoUser(Document):
+    hidden = BooleanField()
+    data = DynamicField()
+    email = EmailField()
+    # document = EmbeddedDocumentField()
+    number = IntField()
+    name = StringField()
+    meta = {'strict':False, "collection":'mongo_user', "db_alias":'sample_mflix'}

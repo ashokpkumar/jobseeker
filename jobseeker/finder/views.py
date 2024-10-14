@@ -10,16 +10,17 @@ from django.http import HttpResponse, HttpResponseNotFound
 from rest_framework.decorators import api_view
 from pymongo import MongoClient
 
+
 #modules
 from utils.jwt import check_hash_password, hash_password, jwt_encode
 from utils.lookup import get_lookup_value, get_lookup_key
 from utils.rbm import CreateUserForm
 from utils.validators import adminrequired, check_valid_user, loginrequired, validate_body
-from .models import LookupTable, User_table
+from .models import LookupTable, User_table, MongoUser
+from utils.mongo_utils import connect_mongodb
 
 
-
-client = MongoClient("<CONNECTION_STRING>")
+client = MongoClient("mongodb+srv://nikhithtest:test_1234@nikimongo.913qf.mongodb.net/")
 db = client.sample_mflix
 
 logger = logging.getLogger(__name__)
@@ -174,5 +175,70 @@ def approve_user(request, userid):
 def create_mongo_user(request):
     username = request.data.get("username")
     password = request.data.get("password")
-    result = db.users.insert_one({"name": username,"password":password})
+    result = db.movies.insert_one({"name": username,"password":password})
     return HttpResponse("Mongo DB user created")
+
+@api_view(['POST'])
+def create_mongo_user_orm(request):
+    # username = request.data.get("username")
+    # password = request.data.get("password")
+    connect_mongodb()
+    obj = MongoUser()
+    obj.hidden = request.data.get("hidden")
+    obj.data = request.data.get("data")
+    obj.email = request.data.get("email")
+    obj.number = request.data.get("number")
+    obj.name = request.data.get("name")
+    obj.save()
+   # result = db.movies.insert_one({"name": username,"password":password})
+    return HttpResponse("Mongo DB user created")
+
+
+@api_view(['GET'])
+def get_mongo_user_orm(request):
+    connect_mongodb()
+    obj = MongoUser.objects.filter(hidden=True).all()
+    obj_dict = []
+    for item in obj:
+        item_info = {
+            "hidden" : item.hidden,
+            "data" : item.data,
+            "email" : item.email,
+            "number" : item.number,
+            "name" : item.name
+        }
+        obj_dict.append(item_info)
+    return HttpResponse(obj_dict)
+
+@api_view(['GET'])
+def fetch_mongo_user_orm(request):
+    connect_mongodb()
+    hidden = request.GET.get("hidden")
+    data = request.GET.get("data")
+    email = request.GET.get("email")
+    number = request.GET.get("number")
+    name = request.GET.get("name")
+    obj = MongoUser.objects
+    if hidden is not None:
+        obj = obj.filter(hidden=hidden)
+    if data is not None:
+        obj = obj.filter(data=data)
+    if email is not None:
+        obj = obj.filter(email=email)
+    if number is not None:
+        obj = obj.filter(number=number)
+    if name is not None:
+        obj = obj.filter(name=name)
+    rest = obj.all()
+
+    obj_dict = []
+    for item in rest:
+        item_info = {
+            "hidden" : item.hidden,
+            "data" : item.data,
+            "email" : item.email,
+            "number" : item.number,
+            "name" : item.name
+        }
+        obj_dict.append(item_info)
+    return HttpResponse(obj_dict)
