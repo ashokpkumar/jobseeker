@@ -16,10 +16,16 @@ urlpatterns = [
 
     path("converter/<from_cur>/<to_cur>", views.converter, name="converter"),
     path("fetch-users", views.fetch_users, name="fetch_users"),
+    
 
     path("create_mongo_user_orm/",views.create_mongo_user_orm, name="create_mongo_user_orm"),
     path("get_mongo_user_orm/",views.get_mongo_user_orm, name="get_mongo_user_orm"),
-    path("fetch_mongo_user_orm",views.fetch_mongo_user_orm, name="fetch_mongo_user_orm")
+    path("fetch_mongo_user_orm",views.fetch_mongo_user_orm, name="fetch_mongo_user_orm"),
+
+    path("live", views.live, name="live"),
+    path("ready", views.ready, name="ready"),
+
+    
     # path("lookup/", views.lookup, name="lookup"),
     # path("lookup/", views.lookup, name="lookup")
 

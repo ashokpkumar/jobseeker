@@ -242,3 +242,14 @@ def fetch_mongo_user_orm(request):
         }
         obj_dict.append(item_info)
     return HttpResponse(obj_dict)
+
+@api_view(['GET'])
+def live(request):
+    print(datetime.datetime.now())
+    return True
+
+
+@api_view(['GET'])
+def ready(request):
+    print(datetime.datetime.now())
+    return True
