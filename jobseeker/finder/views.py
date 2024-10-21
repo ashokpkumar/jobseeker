@@ -222,7 +222,7 @@ def fetch_mongo_user_orm(request):
     if hidden is not None:
         obj = obj.filter(hidden=hidden)
     if data is not None:
-        obj = obj.filter(data=data)
+        obj = obj.filter(data=int(data))
     if email is not None:
         obj = obj.filter(email=email)
     if number is not None:
