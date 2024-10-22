@@ -245,11 +245,11 @@ def fetch_mongo_user_orm(request):
 
 @api_view(['GET'])
 def live(request):
-    print(datetime.datetime.now())
+    print(datetime.now())
     return True
 
 
 @api_view(['GET'])
 def ready(request):
-    print(datetime.datetime.now())
+    print(datetime.now())
     return True
