@@ -246,10 +246,10 @@ def fetch_mongo_user_orm(request):
 @api_view(['GET'])
 def live(request):
     print(datetime.now())
-    return HttpResponse("Server is alive")
+    return HttpResponse(True)
 
 
 @api_view(['GET'])
 def ready(request):
     print(datetime.now())
-    return HttpResponse("Server is ready")
+    return HttpResponse(True)
