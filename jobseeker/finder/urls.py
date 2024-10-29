@@ -24,6 +24,8 @@ urlpatterns = [
 
     path("live", views.live, name="live"),
     path("ready", views.ready, name="ready"),
+    
+    path("upload", views.upload, name="upload")
 
     
     # path("lookup/", views.lookup, name="lookup"),

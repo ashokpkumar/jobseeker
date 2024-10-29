@@ -48,3 +48,11 @@ class MongoUser(Document):
     number = IntField()
     name = StringField()
     meta = {'strict':False, "collection":'mongo_user', "db_alias":'sample_mflix'}
+
+class Document(models.Model):
+    title = models.CharField(max_length=255)
+    uploaded_file = models.FileField(upload_to='uploads/')  # Files will be stored in the 'uploads/' directory in your bucket
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def _str_(self):
+        return self.title

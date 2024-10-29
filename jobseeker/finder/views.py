@@ -16,7 +16,7 @@ from utils.jwt import check_hash_password, hash_password, jwt_encode
 from utils.lookup import get_lookup_value, get_lookup_key
 from utils.rbm import CreateUserForm
 from utils.validators import adminrequired, check_valid_user, loginrequired, validate_body
-from .models import LookupTable, User_table, MongoUser
+from .models import LookupTable, User_table, MongoUser, Document
 from utils.mongo_utils import connect_mongodb
 
 
@@ -253,3 +253,11 @@ def live(request):
 def ready(request):
     print(datetime.now())
     return HttpResponse(True)
+
+@api_view(['POST'])
+def upload(request):
+    title = request.data.get("title")
+    uploaded_file = request.FILES.get("uploaded_file")
+    document = Document(title=title, uploaded_file=uploaded_file)
+    document.save()
+    return HttpResponse("File uploaded successfully")
