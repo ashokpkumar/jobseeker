@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from rest_framework.decorators import api_view
 from pymongo import MongoClient
 
+from django.core.files.storage import default_storage
 
 #modules
 from utils.jwt import check_hash_password, hash_password, jwt_encode
@@ -256,6 +257,9 @@ def ready(request):
 
 @api_view(['POST'])
 def upload(request):
+    file = request.FILES['uploaded_file']
+    file_name = default_storage.save(file.name, file)
+    print(file_name)
     title = request.data.get("title")
     uploaded_file = request.FILES.get("uploaded_file")
     document = Document(title=title, uploaded_file=uploaded_file)
