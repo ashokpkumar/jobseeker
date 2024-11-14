@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ SECRET_KEY = "django-insecure-kjd2$*&qa=t7zuebieh8+bjc_ybp2r_y3&=arr=n$jlw6p+h=!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',"98.80.13.156"]
 
 
 # Application definition
@@ -83,11 +85,11 @@ WSGI_APPLICATION = "jobseeker.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Job_Portal",
-        "USER": "postgres",
-        "PASSWORD": "niki_data",
-        "HOST": "127.0.0.1",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "myproject",
+        "USER": "myprojectuser",
+        "PASSWORD": "userpassword",
+        "HOST": "localhost",
         "PORT": "5432",
     }
 }
@@ -132,4 +134,6 @@ STATIC_URL = "static/"
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
