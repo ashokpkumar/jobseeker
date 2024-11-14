@@ -27,6 +27,7 @@ SECRET_KEY = "django-insecure-kjd2$*&qa=t7zuebieh8+bjc_ybp2r_y3&=arr=n$jlw6p+h=!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = ['*',"98.80.13.156"]
 
 
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",
+    "django.contrib.staticfiles",    'storages',
     "finder.apps.FinderConfig"
 ]
 
@@ -85,15 +86,11 @@ WSGI_APPLICATION = "jobseeker.wsgi.application"
 
 DATABASES = {
     "default": {
+
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "myproject",
         "USER": "myprojectuser",
         "PASSWORD": "userpassword",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
