@@ -1,5 +1,4 @@
-from django.urls import path
-
+from django.urls import path, include
 from . import views
 from django.contrib import admin
 
@@ -25,7 +24,9 @@ urlpatterns = [
     path("live", views.live, name="live"),
     path("ready", views.ready, name="ready"),
     
-    path("upload", views.upload, name="upload")
+    path("upload", views.upload, name="upload"),
+
+    path('finder/account/', include('allauth.urls'))
 
     
     # path("lookup/", views.lookup, name="lookup"),

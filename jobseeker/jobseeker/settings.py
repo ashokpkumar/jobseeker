@@ -38,8 +38,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'storages',
-    "finder.apps.FinderConfig"
+    "finder.apps.FinderConfig",
+    'corsheaders',
+    'django.contrib.sites',  # Required for allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # For Google SSO
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -49,6 +57,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',
 ]
 
 ROOT_URLCONF = "jobseeker.urls"
@@ -85,10 +98,10 @@ WSGI_APPLICATION = "jobseeker.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
+        "NAME": "Job_Portal",
         "USER": "postgres",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
+        "PASSWORD": "niki_data",
+        "HOST": "127.0.0.1",
         "PORT": "5432",
     }
 }
@@ -191,3 +204,21 @@ STORAGES = {
         "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
     },
     }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth backend
+]
+
+LOGIN_REDIRECT_URL = '/'  # Redirect after successful login
+LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '920681575091-tiad60uf0qoal13f7umip06buqfbpcbh.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}

@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from pymongo import MongoClient
 
 from django.core.files.storage import default_storage
+from django.http import JsonResponse
 
 #modules
 from utils.jwt import check_hash_password, hash_password, jwt_encode
@@ -117,7 +118,8 @@ def login(request):
                     "i_at" : str(datetime.now()),
                     "exp_at": str(datetime.now() + timedelta(minutes=15))
                 }
-                return HttpResponse(jwt_encode(payload)) 
+                print(HttpResponse(jwt_encode(payload)))
+                return JsonResponse({"token":jwt_encode(payload)}) 
     except:
         user_obj = User_table.objects.filter(email=username, password_hash=hash(password)).first()
         if user_obj is None:
