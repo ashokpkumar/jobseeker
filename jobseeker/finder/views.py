@@ -269,3 +269,18 @@ def upload(request):
     document = Document(title=title, uploaded_file=uploaded_file)
     document.save()
     return HttpResponse("File uploaded successfully")
+
+
+@api_view(['POST'])
+def add_redis(request):
+    key = request.POST.get("key")
+    value = request.POST.get("value")
+    request.session[key] = value
+    return HttpResponse("success")
+
+@api_view(['GET'])
+def get_redis(request):
+    key = request.GET.get("key")
+    value = request.session.get(key)
+    return HttpResponse(value)
+
