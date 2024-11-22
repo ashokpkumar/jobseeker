@@ -97,7 +97,7 @@ def lookup(request):   # this function enters data in the lookup table with mast
 @validate_body
 def login(request):
     """
-    returns jwt code after successful login
+    returns jwt code after successful login # JWT code is session key valid for some time
     """
     username = request.data.get("username")
     password = request.data.get("password")
@@ -121,9 +121,11 @@ def login(request):
                 print(HttpResponse(jwt_encode(payload)))
                 return JsonResponse({"token":jwt_encode(payload)}) 
     except:
-        user_obj = User_table.objects.filter(email=username, password_hash=hash(password)).first()
+        user_obj = User_table.objects.filter(email=username).first()
         if user_obj is None:
-            return HttpResponse("Invalid User")
+            return HttpResponse("User doesn't exists")
+        elif check_hash_password(password,user_obj.password_hash) == False:
+                return HttpResponseNotFound("Invalid Password")
         else:
             payload = {
                 "user_id" : user_obj.user_id,
@@ -131,10 +133,10 @@ def login(request):
                 "last_name" : user_obj.last_name,
                 "user_email" : user_obj.email,
                 "phone" : user_obj.phone,
-                "i_at" : str(datetime.datetime.now()),
-                "exp_at": str(datetime.datetime.now() + datetime.timedelta(minutes=15))
+                "i_at" : str(datetime.now()),
+                "exp_at": str(datetime.now() + timedelta(minutes=15))
             }
-            return HttpResponse(jwt_encode(payload))
+            return JsonResponse({"token":jwt_encode(payload)})
 
 @api_view(['GET'])
 def fetch_users(request):
