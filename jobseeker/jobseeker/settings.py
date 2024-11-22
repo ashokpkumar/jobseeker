@@ -100,9 +100,9 @@ WSGI_APPLICATION = "jobseeker.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "Job_Portal",
-        "USER": "postgres",
-        "PASSWORD": "niki_data",
+        "NAME": "myproject",
+        "USER": "myprojectuser",
+        "PASSWORD": "userpassword",
         "HOST": "127.0.0.1",
         "PORT": "5432",
     }
