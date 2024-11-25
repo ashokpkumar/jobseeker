@@ -12,6 +12,9 @@ urlpatterns = [
     path("login/approve-user/<userid>", views.approve_user, name="approve_user"),
     path("lookup/", views.lookup, name="lookup"),
     path("create_mongo_user/",views.create_mongo_user, name="create_user"),
+    path("create_session",views.create_session, name="create_session"),
+    path("retrive_session",views.retrive_session, name="retrive_session"),
+    
 
     path("converter/<from_cur>/<to_cur>", views.converter, name="converter"),
     path("fetch-users", views.fetch_users, name="fetch_users"),

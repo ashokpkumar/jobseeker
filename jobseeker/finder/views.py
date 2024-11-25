@@ -284,3 +284,17 @@ def get_redis(request):
     value = request.session.get(key)
     return HttpResponse(value)
 
+@api_view(['POST'])
+@loginrequired
+def create_session(request):
+    request.session["first_name"] = request.first_name
+    request.session["last_name"] = request.last_name
+    return HttpResponse("Success")
+
+    
+@api_view(['GET'])
+@loginrequired
+def retrive_session(request):  
+    print(request.session.get("first_name"))
+    print(request.session.get("last_name"))
+    return HttpResponse("Success retrived")
