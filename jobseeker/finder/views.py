@@ -287,14 +287,17 @@ def get_redis(request):
 @api_view(['POST'])
 @loginrequired
 def create_session(request):
-    request.session["first_name"] = request.first_name
-    request.session["last_name"] = request.last_name
+    request.session[f"user_{request.user_id}_first_name"] = request.first_name
+    request.session[f"user_{request.user_id}_last_name"] = request.last_name
+
     return HttpResponse("Success")
 
     
 @api_view(['GET'])
 @loginrequired
 def retrive_session(request):  
-    print(request.session.get("first_name"))
-    print(request.session.get("last_name"))
+    first_name = request.session.get(f"user_{request.user_id}_first_name")
+    last_name = request.session.get(f"user_{request.user_id}_last_name")
+    print(first_name)
+    print(last_name)
     return HttpResponse("Success retrived")
