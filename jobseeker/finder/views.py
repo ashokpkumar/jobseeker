@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from pymongo import MongoClient
 
 from django.core.files.storage import default_storage
+from django.http import JsonResponse
 
 #modules
 from utils.jwt import check_hash_password, hash_password, jwt_encode
@@ -96,7 +97,7 @@ def lookup(request):   # this function enters data in the lookup table with mast
 @validate_body
 def login(request):
     """
-    returns jwt code after successful login
+    returns jwt code after successful login # JWT code is session key valid for some time
     """
     username = request.data.get("username")
     password = request.data.get("password")
@@ -117,11 +118,14 @@ def login(request):
                     "i_at" : str(datetime.now()),
                     "exp_at": str(datetime.now() + timedelta(minutes=15))
                 }
-                return HttpResponse(jwt_encode(payload)) 
+                print(HttpResponse(jwt_encode(payload)))
+                return JsonResponse({"token":jwt_encode(payload)}) 
     except:
-        user_obj = User_table.objects.filter(email=username, password_hash=hash(password)).first()
+        user_obj = User_table.objects.filter(email=username).first()
         if user_obj is None:
-            return HttpResponse("Invalid User")
+            return HttpResponse("User doesn't exists")
+        elif check_hash_password(password,user_obj.password_hash) == False:
+                return HttpResponseNotFound("Invalid Password")
         else:
             payload = {
                 "user_id" : user_obj.user_id,
@@ -129,10 +133,10 @@ def login(request):
                 "last_name" : user_obj.last_name,
                 "user_email" : user_obj.email,
                 "phone" : user_obj.phone,
-                "i_at" : str(datetime.datetime.now()),
-                "exp_at": str(datetime.datetime.now() + datetime.timedelta(minutes=15))
+                "i_at" : str(datetime.now()),
+                "exp_at": str(datetime.now() + timedelta(minutes=15))
             }
-            return HttpResponse(jwt_encode(payload))
+            return JsonResponse({"token":jwt_encode(payload)})
 
 @api_view(['GET'])
 def fetch_users(request):
@@ -265,3 +269,35 @@ def upload(request):
     document = Document(title=title, uploaded_file=uploaded_file)
     document.save()
     return HttpResponse("File uploaded successfully")
+
+
+@api_view(['POST'])
+def add_redis(request):
+    key = request.POST.get("key")
+    value = request.POST.get("value")
+    request.session[key] = value
+    return HttpResponse("success")
+
+@api_view(['GET'])
+def get_redis(request):
+    key = request.GET.get("key")
+    value = request.session.get(key)
+    return HttpResponse(value)
+
+@api_view(['POST'])
+@loginrequired
+def create_session(request):
+    request.session[f"user_{request.user_id}_first_name"] = request.first_name
+    request.session[f"user_{request.user_id}_last_name"] = request.last_name
+
+    return HttpResponse("Success")
+
+    
+@api_view(['GET'])
+@loginrequired
+def retrive_session(request):  
+    first_name = request.session.get(f"user_{request.user_id}_first_name")
+    last_name = request.session.get(f"user_{request.user_id}_last_name")
+    print(first_name)
+    print(last_name)
+    return HttpResponse("Success retrived")

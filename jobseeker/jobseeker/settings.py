@@ -27,8 +27,7 @@ SECRET_KEY = "django-insecure-kjd2$*&qa=t7zuebieh8+bjc_ybp2r_y3&=arr=n$jlw6p+h=!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-ALLOWED_HOSTS = ['*',"98.80.13.156"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -39,9 +38,18 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    "django.contrib.staticfiles",    'storages',
-    "finder.apps.FinderConfig"
+    "django.contrib.staticfiles",
+    'storages',
+    "finder.apps.FinderConfig",
+    'corsheaders',
+    'django.contrib.sites',  # Required for allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # For Google SSO
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -51,6 +59,13 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',  # Add this line
+
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',
 ]
 
 ROOT_URLCONF = "jobseeker.urls"
@@ -86,6 +101,14 @@ WSGI_APPLICATION = "jobseeker.wsgi.application"
 
 DATABASES = {
     "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "Job_Portal",
+        "USER": "postgres",
+        "PASSWORD": "niki_data",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    }
+}
 
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "myproject",
@@ -133,4 +156,93 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+   'loggers': {
+    'finder.views': {  # Add this logger specifically for your views
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'django': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'jobseeker': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+},
+}
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_ACCESS_KEY_ID = 'AKIAUPMYNIJVZ55VKUVJ'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = "recruiter-finder"
+AWS_S3_REGION_NAME = 'eu-north-1'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+
+AWS_S3_FILE_OVERWRITE = False  
+AWS_DEFAULT_ACL = None     
+AWS_QUERYSTRING_AUTH = False
+S3_BASE_PATH = "https://recruiter-finder.s3.eu-north-1.amazonaws.com/"
+AWS_DATA_ACCESS_USER="paralelS3dataaccess"
+
+STORAGES = {
+
+    # Media file (image) management  
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+    },
+    # CSS and JS file management
+    "staticfiles": {
+        "BACKEND": "storages.backends.s3boto3.S3StaticStorage",
+    },
+    }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend
+    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth backend
+]
+
+LOGIN_REDIRECT_URL = '/'  # Redirect after successful login
+LOGOUT_REDIRECT_URL = '/'  # Redirect after logout
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '920681575091-tiad60uf0qoal13f7umip06buqfbpcbh.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        }
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+SESSION_COOKIE_AGE = 1209600  
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False 
+SESSION_SAVE_EVERY_REQUEST = True
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1", 
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "jf_"
+    }
+}
